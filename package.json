@@ -1,0 +1,24 @@
+{
+  "name": "social-buttons",
+  "version": "1.0.0",
+  "description": "An emblematic social buttons in ES6 web components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterblazejewicz/social-buttons.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peterblazejewicz/social-buttons/issues"
+  },
+  "homepage": "https://github.com/peterblazejewicz/social-buttons#readme",
+  "devDependencies": {
+    "browser-sync": "^2.18.12"
+  }
+}

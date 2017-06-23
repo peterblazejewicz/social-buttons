@@ -1,0 +1,40 @@
+<script>
+    
+    const SocialButtonsMixin = (superclass) => new MixinBuilder(superclass);
+    
+    class MixinBuilder {
+        constructor(superclass) {
+            this.superclass = superclass;
+        }
+
+        with(...mixins) {
+            return mixins.reduce((aclass, mixin) => mixin(aclass), this.superclass);
+        }
+    }
+
+    let SocialButtonsTemplate = (superclass) => class extends superclass {
+        static get template() { 
+            return tpl.cloneNode(true);
+        }
+    }
+
+    let SocialButonsDimensions = (superclass) =>  class extends superclass {
+
+        get width() {
+            return this.getAttribute('width');
+        }
+
+        set width(value) {
+            this.setAttribute('width', value);
+        }
+
+        get height() {
+            return this.getAttribute('height');
+        }
+
+        set height(value) {
+            this.setAttribute('height', value);
+        }
+
+    }
+</script>

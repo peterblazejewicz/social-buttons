@@ -1,0 +1,47 @@
+<link rel="import" href="social-buttons-common.html">
+
+<template>
+    <style>
+        :host {
+            display: inline-block;
+            overflow: hidden;
+            border: none;
+        }
+    </style>
+    <p>Facebook Button</p>
+</template>
+
+<script>
+
+    const tpl = document.currentScript
+        .ownerDocument.querySelector('template');
+
+    class FacebookSocialButton extends SocialButtonsMixin(HTMLElement).with(SocialButtonsTemplate, SocialButonsDimensions) {
+
+        static get observedAttributes() {
+            return [
+                'width',
+                'height'
+            ]
+        }
+        static get is() { return 'facebook-socia-button'}
+
+        constructor() {
+            super();
+            this.attachShadow({ mode : 'open' });
+            this.shadowRoot
+                .appendChild(FacebookSocialButton.template);
+        }
+
+        attributeChangedCallback(attribute, oldValue, newValue) {
+            switch(attribute) {
+                case 'width':
+                case 'height':
+                    this.style[attribute] = newValue;
+                    break;
+            }
+        }
+    }
+
+    customElements.define(FacebookSocialButton.is, FacebookSocialButton);
+</script>

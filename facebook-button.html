@@ -1,47 +1,179 @@
-<link rel="import" href="social-buttons-common.html">
-
 <template>
     <style>
-        :host {
-            display: inline-block;
+         :host {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            border: none;
+        }
+
+        iframe {
+            flex: 1 1 auto;
         }
     </style>
-    <p>Facebook Button</p>
+    <iframe id="frame" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
 </template>
 
+<facebook-button href="https://www.facebook.com/CodePen/" action="like" layout="standard" show-faces="false" colorscheme="dark"
+    kid-directed-site="false" ref="" share="false" size="large" width="500" height="300"></facebook-button>
+
 <script>
-
-    const tpl = document.currentScript
-        .ownerDocument.querySelector('template');
-
-    class FacebookSocialButton extends SocialButtonsMixin(HTMLElement).with(SocialButtonsTemplate, SocialButonsDimensions) {
-
-        static get observedAttributes() {
-            return [
-                'width',
-                'height'
-            ]
+    class MixinBuilder {
+        constructor(superclass) {
+            this.superclass = superclass;
         }
-        static get is() { return 'facebook-socia-button'}
-
-        constructor() {
-            super();
-            this.attachShadow({ mode : 'open' });
-            this.shadowRoot
-                .appendChild(FacebookSocialButton.template);
+        with(...mixins) {
+            return mixins.reduce((mixin, aclass) => mixin(aclass), this.superclass);
         }
-
-        attributeChangedCallback(attribute, oldValue, newValue) {
-            switch(attribute) {
-                case 'width':
-                case 'height':
-                    this.style[attribute] = newValue;
-                    break;
-            }
+    }
+    const SocialButtonsMixin = (superclass) => new MixinBuilder(superclass);
+    const DimensionSupport = (superclass) => class extends superclass {
+        get width() {
+            return this.getAttribute('width') || 0;
+        }
+        set width(newValue) {
+            this.setAttribute('width', newValue);
+        }
+        get height() {
+            return this.getAttribute('height') || '';
+        }
+        set height(newValue) {
+            this.setAttribute('height', newValue);
         }
     }
 
-    customElements.define(FacebookSocialButton.is, FacebookSocialButton);
+    const facebookButtonTemplate = (document._currentScript || document.currentScript).ownerDocument.querySelector(
+        'template').content;
+
+    class FacebookButton extends SocialButtonsMixin(HTMLElement).with(DimensionSupport) {
+
+        static get is() {
+            return 'facebook-button';
+        }
+
+        static get template() {
+            return facebookButtonTemplate.cloneNode(true);
+        }
+
+        static get observedAttributes() {
+            return [
+                'href',
+                'action',
+                'layout',
+                'show-faces',
+                'colorscheme',
+                'kid-directed-site',
+                'ref',
+                'share',
+                'size',
+                'width',
+                'height'
+            ];
+        }
+
+        constructor() {
+            super();
+            this.attachShadow({
+                mode: 'open'
+            });
+            this.shadowRoot.appendChild(FacebookButton.template);
+            this.frame = this.shadowRoot.querySelector('#frame');
+        }
+
+        connectedCallback() {
+            this.updateFrameSource
+        }
+
+        get action() {
+            return this.getAttribute('action') || '';
+        }
+
+        set action(value) {
+            this.setAttribute('action', value);
+        }
+
+        get showFaces() {
+            return this.getAttribute('show-faces') || '';
+        }
+
+        set showFaces(value) {
+            this.setAttribute('show-faces', value);
+        }
+
+        get colorScheme() {
+            return this.getAttribute('colorscheme') || '';
+        }
+
+        set colorScheme(value) {
+            this.setAttribute('colorscheme', value);
+        }
+
+        get kidDirectedSite() {
+            return this.getAttribute('kid-directed-site') || '';
+        }
+
+        set kidDirectedSite(value) {
+            this.setAttribute('kid-directed-site', value);
+        }
+
+        get ref() {
+            return this.getAttribute('ref') || '';
+        }
+
+        set ref(value) {
+            this.setAttribute('ref', value);
+        }
+
+        get share() {
+            return this.getAttribute('share') || '';
+        }
+
+        set share(value) {
+            this.setAttribute('share', value);
+        }
+
+        get size() {
+            return this.getAttribute('size') || '';
+        }
+
+        set size(value) {
+            this.setAttribute('size', value);
+        }
+
+        get href() {
+            return this.getAttribute('href') || '';
+        }
+        set href(newValue) {
+            this.setAttribute('href', newValue);
+        }
+
+        get layout() {
+            return this.getAttribute('layout') || '';
+        }
+
+        set layout(value) {
+            this.setAttribute('layout', value);
+        }
+
+        attributeChangedCallback(attributeName, oldValue, newValue) {
+            switch (attributeName) {
+                case 'href':
+                    this.updateFrameSource();
+                    break;
+                case 'width':
+                case 'height':
+                    this.frame.style[attributeName] = `${newValue}px`;
+                    break;
+            }
+        }
+
+        updateFrameSource() {
+            let src =
+                `https://www.facebook.com/plugins/like.php?href=${encodeURIComponent(this.href)}&send=false&layout=${this.layout}&amp;width=${this.width}&height=${this.height}&show_faces=${this.showFaces}&colorscheme=${this.colorScheme}&action=${this.action}&size=${this.size}`;
+            console.log(src);
+            this.frame.src = src;
+        }
+    }
+    customElements.define(FacebookButton.is, FacebookButton);
 </script>

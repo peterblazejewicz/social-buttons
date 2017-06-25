@@ -24,11 +24,12 @@
             this.superclass = superclass;
         }
         with(...mixins) {
-            return mixins.reduce((mixin, aclass) => mixin(aclass), this.superclass);
+            return mixins.reduce((aclass, mixin) => mixin(aclass), this.superclass);
         }
     }
     const SocialButtonsMixin = (superclass) => new MixinBuilder(superclass);
-    const DimensionSupport = (superclass) => class extends superclass {
+
+    const ButtonDimensions = (superclass) => class extends superclass {
         get width() {
             return this.getAttribute('width') || 0;
         }
@@ -46,7 +47,7 @@
     const facebookButtonTemplate = (document._currentScript || document.currentScript).ownerDocument.querySelector(
         'template').content;
 
-    class FacebookButton extends SocialButtonsMixin(HTMLElement).with(DimensionSupport) {
+    class FacebookButton extends SocialButtonsMixin(HTMLElement).with(ButtonDimensions) {
 
         static get is() {
             return 'facebook-button';
